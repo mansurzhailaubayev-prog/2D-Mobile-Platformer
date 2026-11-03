@@ -1,0 +1,11 @@
+AI ASSISTANCE LOG (Gemini)
+Student: Mansur Zhailaubayev
+Project: platformer 2d (Assignment 8-9 RK2)
+
+1. COMPILATION & BUG FIXING:
+- Resolved compilation issues and SceneController DontDestroyOnLoad logic.
+- Fixed UI Pause Panel overlap and Raycast input blocking bugs.
+
+2. MOBILE INPUT & UI ADAPTATION:
+- Configured Canvas Scaler to Scale With Screen Size (1920x1080, Match Height 1.0).
+- Positioned Anchors and Touch UI Layout for 16:9, Notch Devices, and 4:3 Tablets.
