@@ -1,0 +1,1 @@
+If you want to check the app you need to download prefabs, scenes, scripts and sprites folders and add it to assets in your project, and download project settings and replace project settings in your project folder
