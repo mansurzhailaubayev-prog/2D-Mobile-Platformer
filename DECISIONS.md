@@ -7,3 +7,8 @@ Project: 2D Mobile Platformer
 - 2026-11-10: Refactored ShooterEnemy and Boss scripts to handle dynamic target leading using Rigidbody2D projectile setup with direction vectors.
 - 2026-11-10: Integrated bullet collision logic with the pre-existing Health component and Hazard base class (`Health.TakeDamage(1)`).
 - 2026-11-10: Playtest feedback: Tester 1 took 4 tries, Tester 2 took 3 tries. Adjusted Shooter wind-up (0.4s -> 0.6s) and Charger speed (14 -> 10) to guarantee telegraph visibility and fair dodge timing.
+## Assignment 11 — Data and Saves (2026-11-17)
+- Moved all hardcoded enemy, boss, and player balance values into EnemyStats and PlayerStats ScriptableObjects (0 magic numbers in scripts).
+- Created Level_01, Level_02, and Level_03 LevelData assets to dynamically spawn enemies and configure level timers via LevelLoader.
+- Implemented SaveManager with JsonUtility and Application.persistentDataPath instead of BinaryFormatter; used List<int> for unlocked levels because JsonUtility ignores Dictionary.
+- Added try/catch fallback to default GameData in LoadGame() to prevent crashes on missing or corrupted save.json files, plus auto-save on level exit, volume change, and OnApplicationPause(true).
