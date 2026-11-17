@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af767e0ed86e0147b72ea64b2cbc053, type: 3}
+  m_Name: Level_01
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  levelNumber: 1
+  levelName: Level 1
+  timeLimit: 90
+  playerStartPosition: {x: -7.86, y: -3.38}
+  enemiesToSpawn:
+  - enemyPrefab: {fileID: 484394360442407013, guid: 27731ca7dcb3bf0488a7fa382c1572f2, type: 3}
+    spawnPosition: {x: 3.13, y: -3.56}
