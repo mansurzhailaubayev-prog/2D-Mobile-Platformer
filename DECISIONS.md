@@ -12,3 +12,8 @@ Project: 2D Mobile Platformer
 - Created Level_01, Level_02, and Level_03 LevelData assets to dynamically spawn enemies and configure level timers via LevelLoader.
 - Implemented SaveManager with JsonUtility and Application.persistentDataPath instead of BinaryFormatter; used List<int> for unlocked levels because JsonUtility ignores Dictionary.
 - Added try/catch fallback to default GameData in LoadGame() to prevent crashes on missing or corrupted save.json files, plus auto-save on level exit, volume change, and OnApplicationPause(true).
+## Assignment 12 — Sound Pass (2026-11-25)
+- 2026-11-25: Converted Music and SFX volume sliders from linear scale to logarithmic decibels (Log10 * 20) in AudioManager so 50% volume feels natural.
+- 2026-11-25: Added random pitch variation (0.92–1.08) and multiple hit clips to prevent repetitive robotic sound effects.
+- 2026-11-25: Built a single DontDestroyOnLoad AudioManager with dual AudioSources for 1-second music crossfading without restarting tracks on scene reload.
+- 2026-11-25: Configured a Paused AudioMixer snapshot (-12 dB attenuation and 900 Hz Lowpass filter) triggered by PauseManager to soften music on pause.
