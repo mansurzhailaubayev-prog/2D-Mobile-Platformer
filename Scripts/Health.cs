@@ -1,26 +1,21 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; // Подключаем TextMeshPro для вывода текста жизней
+using TMPro;
 
 public class Health : MonoBehaviour
 {
     public int maxHealth = 3;
     public int currentHealth;
 
-    public TextMeshProUGUI hpText; // Поле для текста HP на Canvas
+    public TextMeshProUGUI hpText;
 
     private bool isInvincible = false;
     private SpriteRenderer sr;
-    private AudioSource audioSource;
-
-    public AudioClip hurtClip;
-    public AudioClip healClip;
 
     void Start()
     {
         currentHealth = maxHealth;
         sr = GetComponent<SpriteRenderer>();
-        audioSource = GetComponent<AudioSource>();
         UpdateUI();
     }
 
@@ -31,15 +26,14 @@ public class Health : MonoBehaviour
         currentHealth -= damage;
         UpdateUI();
 
-        if (audioSource != null && hurtClip != null)
-            audioSource.PlayOneShot(hurtClip);
-
         if (currentHealth <= 0)
         {
+            AudioManager.Instance?.PlayDeath();
             GameOver();
         }
         else
         {
+            AudioManager.Instance?.PlayHit();
             StartCoroutine(InvincibilityRoutine());
         }
     }
@@ -49,8 +43,7 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         UpdateUI();
 
-        if (audioSource != null && healClip != null)
-            audioSource.PlayOneShot(healClip);
+        AudioManager.Instance?.PlayPickup();
     }
 
     private void UpdateUI()
@@ -77,7 +70,6 @@ public class Health : MonoBehaviour
 
     void GameOver()
     {
-        // Перезагрузка сцены через единый контроллер
         if (SceneController.instance != null)
         {
             SceneController.instance.RestartCurrentLevel();

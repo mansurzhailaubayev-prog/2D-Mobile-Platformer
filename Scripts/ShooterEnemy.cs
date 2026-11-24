@@ -4,13 +4,10 @@ using UnityEngine;
 public class ShooterEnemy : Hazard
 {
     public enum State { Idle, Aiming, Cooldown }
-    [Header("Current State")]
     public State currentState = State.Idle;
 
-    [Header("Settings")]
-    [SerializeField] private float sightRange = 8f;
-    [SerializeField] private float windUpTime = 0.6f;
-    [SerializeField] private float cooldownTime = 1.5f;
+    [Header("Data & References")]
+    [SerializeField] private EnemyStats stats;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
 
@@ -26,9 +23,9 @@ public class ShooterEnemy : Hazard
 
     private void Update()
     {
-        if (player == null || currentState != State.Idle) return;
+        if (player == null || stats == null || currentState != State.Idle) return;
 
-        if (Vector2.Distance(transform.position, player.position) <= sightRange)
+        if (Vector2.Distance(transform.position, player.position) <= stats.sightRange)
         {
             StartCoroutine(ShootSequence());
         }
@@ -37,15 +34,15 @@ public class ShooterEnemy : Hazard
     private IEnumerator ShootSequence()
     {
         currentState = State.Aiming;
-        if (sr != null) sr.color = Color.yellow; // Сигнал прицеливания (wind-up)
+        if (sr != null) sr.color = Color.yellow;
+        AudioManager.Instance?.PlayEnemyWindUp();
 
-        yield return new WaitForSeconds(windUpTime);
+        yield return new WaitForSeconds(stats.windUpTime);
 
         if (bulletPrefab != null && firePoint != null && player != null)
         {
             Vector2 shootDirection = (player.position - firePoint.position).normalized;
 
-            // Разворот врага к игроку
             if (shootDirection.x < 0)
                 transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             else if (shootDirection.x > 0)
@@ -55,14 +52,14 @@ public class ShooterEnemy : Hazard
             ProjectileBullet bulletScript = bullet.GetComponent<ProjectileBullet>();
             if (bulletScript != null)
             {
-                bulletScript.Setup(shootDirection);
+                bulletScript.Setup(shootDirection, stats);
             }
         }
 
         if (sr != null) sr.color = Color.white;
         currentState = State.Cooldown;
 
-        yield return new WaitForSeconds(cooldownTime);
+        yield return new WaitForSeconds(stats.cooldownTime);
         currentState = State.Idle;
     }
 }

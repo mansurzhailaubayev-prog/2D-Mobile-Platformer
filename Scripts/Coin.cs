@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Coin : MonoBehaviour
 {
@@ -8,6 +7,7 @@ public class Coin : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             ScoreManager.instance?.AddCoin();
+            AudioManager.Instance?.PlayPickup();
             Destroy(gameObject);
         }
     }

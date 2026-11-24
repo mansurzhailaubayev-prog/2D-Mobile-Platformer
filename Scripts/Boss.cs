@@ -3,19 +3,29 @@ using UnityEngine.UI;
 
 public class Boss : MonoBehaviour
 {
-    public int maxHealth = 10;
-    public int currentHealth;
+    [Header("Data & References")]
+    [SerializeField] private EnemyStats stats;
     public Image hpBar;
     public GameObject bossBulletPrefab;
     public Transform firePoint;
 
+    private int currentHealth;
     private float attackTimer = 0f;
-    public float attackInterval = 1.8f;
     private Transform player;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        currentHealth = stats != null ? stats.maxHealth : 10;
+
+        if (hpBar == null)
+        {
+            GameObject barObj = GameObject.Find("BossHPBar");
+            if (barObj != null)
+            {
+                hpBar = barObj.GetComponent<Image>();
+            }
+        }
+
         UpdateHPBar();
 
         GameObject p = GameObject.FindWithTag("Player");
@@ -24,8 +34,10 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
+        if (stats == null) return;
+
         attackTimer += Time.deltaTime;
-        if (attackTimer >= attackInterval)
+        if (attackTimer >= stats.cooldownTime)
         {
             Attack();
             attackTimer = 0f;
@@ -36,7 +48,6 @@ public class Boss : MonoBehaviour
     {
         if (bossBulletPrefab != null && firePoint != null)
         {
-            // Если игрок найден, рассчитываем вектор прицеливания в него, иначе стреляем влево
             Vector2 shootDirection = Vector2.left;
             if (player != null)
             {
@@ -44,12 +55,10 @@ public class Boss : MonoBehaviour
             }
 
             GameObject bullet = Instantiate(bossBulletPrefab, firePoint.position, Quaternion.identity);
-
-            // Запускаем пулю через новый класс ProjectileBullet
             ProjectileBullet bulletScript = bullet.GetComponent<ProjectileBullet>();
             if (bulletScript != null)
             {
-                bulletScript.Setup(shootDirection);
+                bulletScript.Setup(shootDirection, stats);
             }
         }
     }
@@ -61,14 +70,23 @@ public class Boss : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            AudioManager.Instance?.PlayWin();
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.UnlockLevel(4);
+            }
             SceneController.instance?.LoadNextLevel();
             Destroy(gameObject);
+        }
+        else
+        {
+            AudioManager.Instance?.PlayHit();
         }
     }
 
     void UpdateHPBar()
     {
-        if (hpBar != null)
-            hpBar.fillAmount = (float)currentHealth / maxHealth;
+        if (hpBar != null && stats != null)
+            hpBar.fillAmount = (float)currentHealth / stats.maxHealth;
     }
 }

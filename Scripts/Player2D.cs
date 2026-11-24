@@ -32,7 +32,8 @@ public class Player2D : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
 
-            // Включаем анимацию прыжка
+            AudioManager.Instance?.PlayJump();
+
             if (anim != null) anim.SetBool("IsJumping", true);
         }
     }
@@ -48,17 +49,14 @@ public class Player2D : MonoBehaviour
 
     void Update()
     {
-        // Движение
         rb.linearVelocity = new Vector2(moveInput.x * speed, rb.linearVelocity.y);
 
-        // Разворот спрайта и анимация бега
         if (moveInput.x != 0 && sr != null)
         {
             sr.flipX = moveInput.x < 0;
         }
         if (anim != null) anim.SetFloat("Speed", Mathf.Abs(moveInput.x));
 
-        // Если игрок упал в яму ниже экрана (-15 по Y) — наносим урон через Health
         if (transform.position.y < -15f)
         {
             Health health = GetComponent<Health>();
@@ -71,7 +69,6 @@ public class Player2D : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            // Выключаем анимацию прыжка при приземлении
             if (anim != null) anim.SetBool("IsJumping", false);
         }
     }

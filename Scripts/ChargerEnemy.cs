@@ -4,15 +4,10 @@ using UnityEngine;
 public class ChargerEnemy : Hazard
 {
     public enum State { Idle, Preparing, Charging, Cooldown }
-    [Header("Current State")]
     public State currentState = State.Idle;
 
-    [Header("Settings")]
-    [SerializeField] private float sightRange = 7f;
-    [SerializeField] private float windUpTime = 0.7f;
-    [SerializeField] private float chargeSpeed = 10f;
-    [SerializeField] private float chargeDuration = 0.5f;
-    [SerializeField] private float cooldownTime = 2f;
+    [Header("Data Asset")]
+    [SerializeField] private EnemyStats stats;
 
     private Transform player;
     private Vector2 chargeDirection;
@@ -27,9 +22,9 @@ public class ChargerEnemy : Hazard
 
     private void Update()
     {
-        if (player == null || currentState != State.Idle) return;
+        if (player == null || stats == null || currentState != State.Idle) return;
 
-        if (Vector2.Distance(transform.position, player.position) <= sightRange)
+        if (Vector2.Distance(transform.position, player.position) <= stats.sightRange)
         {
             StartCoroutine(ChargeSequence());
         }
@@ -39,22 +34,23 @@ public class ChargerEnemy : Hazard
     {
         currentState = State.Preparing;
         chargeDirection = (player.position - transform.position).normalized;
-        if (sr != null) sr.color = Color.red; // Предупреждающая вспышка
+        if (sr != null) sr.color = Color.red;
+        AudioManager.Instance?.PlayEnemyWindUp();
 
-        yield return new WaitForSeconds(windUpTime);
+        yield return new WaitForSeconds(stats.windUpTime);
 
         currentState = State.Charging;
         float timer = 0f;
-        while (timer < chargeDuration)
+        while (timer < stats.chargeDuration)
         {
-            transform.Translate(chargeDirection * chargeSpeed * Time.deltaTime);
+            transform.Translate(chargeDirection * stats.chargeSpeed * Time.deltaTime);
             timer += Time.deltaTime;
             yield return null;
         }
 
         if (sr != null) sr.color = Color.white;
         currentState = State.Cooldown;
-        yield return new WaitForSeconds(cooldownTime);
+        yield return new WaitForSeconds(stats.cooldownTime);
 
         currentState = State.Idle;
     }
